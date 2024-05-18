@@ -1,5 +1,5 @@
 # Projeto de Cálculo Numérico 2
-Repositório para projeto de Cálculo Numérico 2, sobre **MÉTODO QR** feito por Vitor Rolisola e Murilo Missano.
+Repositório para projeto de Cálculo Numérico 2, sobre **MÉTODO QR para cálculo dos autovalores** feito por Vitor Rolisola e Murilo Missano.
 
 ## Detalhamento
 >O projeto final deste curso consiste na criação de um código computacional e apresentação relacionado ao tema proposto.
