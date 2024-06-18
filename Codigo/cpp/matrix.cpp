@@ -6,10 +6,23 @@
 // Default constructor
 Matrix::Matrix() {}
 
-// Default
+// Constructor
 Matrix::Matrix(std::vector<std::vector<double>> matrix) {
     this->matrix = matrix;
 }
+
+// Deep copy of Matrix
+Matrix::Matrix(const Matrix& other) {
+    this->matrix = other.matrix;
+}
+
+Matrix& Matrix::operator=(Matrix other) {
+    if(this != &other) {
+        this->matrix = other.matrix;
+    }
+    return *this;
+}
+
 
 // Destructor
 Matrix::~Matrix() {}
@@ -29,6 +42,16 @@ SquareMatrix::SquareMatrix() {}
 
 // Constructor
 SquareMatrix::SquareMatrix(std::vector<std::vector<double>> matrix) : Matrix(matrix) {}
+
+// Deep copy of Matrix
+SquareMatrix::SquareMatrix(const SquareMatrix& other) : Matrix(other)  {}
+
+SquareMatrix& SquareMatrix::operator=(SquareMatrix other) {
+    if(this != &other) {
+        Matrix::operator=(other);
+    }
+    return *this;
+}
 
 // Destructor
 SquareMatrix::~SquareMatrix() {}
