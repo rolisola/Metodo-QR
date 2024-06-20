@@ -41,7 +41,7 @@ def gram_schmidt(matriz):
     
     return Q, R
 
-def metodo_qr(matriz_inicial, max_iteracoes=100):
+def metodo_qr(matriz_inicial, max_iteracoes=100, erro=1e-8):
     """
     Aplica o método QR iterativo para encontrar autovalores de uma matriz matriz_inicial.
 
@@ -74,8 +74,17 @@ def metodo_qr(matriz_inicial, max_iteracoes=100):
         autovalores_k = [A_k[i, i] for i in range(tam_matriz)]
         autovalores.append(autovalores_k)
 
-        # Critério de parada (quando a matriz se torna triangular)
-        if np.allclose(np.triu(A_k, k=1), np.zeros_like(A_k, dtype=float), atol=1e-8):
+        # Critério de parada (todos os elementos abaixo da diagonal principal são menores que o Erro)
+        criterio_parada = True
+        for i in range(1, tam_matriz):
+            for j in range(i):
+                if abs(A_k[i][j]) >= erro:
+                    criterio_parada = False
+                    break
+            if not criterio_parada:
+                break
+
+        if criterio_parada:
             break
 
     return autovalores
