@@ -47,6 +47,20 @@ std::vector<double> escalarMultiply(std::vector<double> v, double escalar) {
     return v;
 }
 
-Matrix matrixMultiply(Matrix m1, Matrix m2) {
-    std::cout << "not implemented yet" << std::endl;
+std::vector<std::vector<double>> matrixMultiply(const std::vector<std::vector<double>>& m1, const std::vector<std::vector<double>>& m2) {
+    size_t linhasM1 = m1.size();
+    size_t colunasM1 = m1[0].size();
+    size_t colunasM2 = m2[0].size();
+
+    std::vector<std::vector<double>> result(linhasM1, std::vector<double>(colunasM2, 0));
+
+    for (size_t i = 0; i < linhasM1; i++) {
+        for (size_t j = 0; j < colunasM2; j++) {
+            for (size_t k = 0; k < colunasM1; k++) {
+                result[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+    }
+
+    return result;
 }
