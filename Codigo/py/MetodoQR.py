@@ -41,6 +41,53 @@ def gram_schmidt(matriz):
     
     return Q, R
 
+def householder(A):
+    m, n = A.shape
+    R = A.copy()
+    Q = np.eye(m)
+
+    for j in range(n):
+        # Aplicando a reflexão de Householder para zerar os elementos abaixo da diagonal em R
+        x = R[j:m, j]
+        norma_x = norma_vetor(x)
+        if R[j, j] > 0:
+            v1 = -norma_x
+        else:
+            v1 = norma_x
+        v = np.zeros_like(x)
+        v[0] = v1
+        v = v + x
+        v = v / norma_vetor(v)
+        R[j:m, j:n] -= 2 * np.outer(v, np.dot(v.T, R[j:m, j:n]))
+        Q[j:m, :] -= 2 * np.outer(v, np.dot(v.T, Q[j:m, :]))
+
+    return Q.T, R
+
+def givens(A):
+    m, n = A.shape
+    Q = np.eye(m)
+    R = A.copy()
+
+    for j in range(n):
+        for i in range(m-1, j, -1):
+            if R[i, j] != 0:
+                # Calcular os parâmetros da rotação de Givens
+                r = np.sqrt(R[j, j]**2 + R[i, j]**2)
+                c = R[j, j] / r
+                s = -R[i, j] / r
+
+                # Aplicar a rotação de Givens à direita de R
+                G = np.identity(m)
+                G[[j, i], [j, i]] = c
+                G[j, i] = s
+                G[i, j] = -s
+                R = np.dot(G, R)
+
+                # Acumular a matriz Q
+                Q = np.dot(Q, G.T)
+
+    return Q, R
+
 def metodo_qr(matriz_inicial, max_iteracoes=100, erro=1e-8):
     """
     Aplica o método QR iterativo para encontrar autovalores de uma matriz matriz_inicial.
@@ -58,7 +105,6 @@ def metodo_qr(matriz_inicial, max_iteracoes=100, erro=1e-8):
     autovalores = []
 
     for k in range(max_iteracoes):
-        print("vetor")
         Q, R = gram_schmidt(A_k)
 
         print(f"Matriz Q_{k+1}:")
