@@ -88,7 +88,7 @@ def givens(A):
 
     return Q, R
 
-def metodo_qr(matriz_inicial, max_iteracoes=100, erro=1e-8):
+def metodo_qr(matriz_inicial, metodo, max_iteracoes=100, erro=1e-8):
     """
     Aplica o método QR iterativo para encontrar autovalores de uma matriz matriz_inicial.
 
@@ -105,7 +105,12 @@ def metodo_qr(matriz_inicial, max_iteracoes=100, erro=1e-8):
     autovalores = []
 
     for k in range(max_iteracoes):
-        Q, R = gram_schmidt(A_k)
+        if metodo == "gs":
+            Q, R = gram_schmidt(A_k)
+        if metodo == "hh":
+            Q, R = householder(A_k)
+        if metodo == "rg":
+            Q, R = givens(A_k)
 
         print(f"Matriz Q_{k+1}:")
         print(Q)
@@ -145,8 +150,18 @@ if __name__ == "__main__":
     ], dtype=float)
 
     # Aplicando o método QR para encontrar os autovalores
-    autovalores = metodo_qr(matriz_inicial,3)
+    autovalores_gs = metodo_qr(matriz_inicial, "gs", 3)
+    autovalores_hh = metodo_qr(matriz_inicial, "hh", 3)
+    autovalores_rg = metodo_qr(matriz_inicial, "rg", 3)
 
-    print("Autovalores aproximados:")
-    for i, autovalor in enumerate(autovalores[-1]):
+    print("Autovalores aproximados: (Metodo de Gram-Schmidt)")
+    for i, autovalor in enumerate(autovalores_gs[-1]):
+        print(f"lambda_{i+1} =", autovalor)
+    
+    print("Autovalores aproximados: (Metodo de Householder)")
+    for i, autovalor in enumerate(autovalores_hh[-1]):
+        print(f"lambda_{i+1} =", autovalor)
+        
+    print("Autovalores aproximados: (Metodo Rotação de Givens)")
+    for i, autovalor in enumerate(autovalores_rg[-1]):
         print(f"lambda_{i+1} =", autovalor)
