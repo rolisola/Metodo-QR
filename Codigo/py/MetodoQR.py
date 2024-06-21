@@ -154,15 +154,15 @@ if __name__ == "__main__":
     autovalores_hh = metodo_qr(matriz_inicial, "hh", 3)
     autovalores_rg = metodo_qr(matriz_inicial, "rg", 3)
 
-    print("Autovalores aproximados: (Metodo de Gram-Schmidt)")
+    print("\nAutovalores aproximados: (Metodo de Gram-Schmidt)")
     for i, autovalor in enumerate(autovalores_gs[-1]):
         print(f"lambda_{i+1} =", autovalor)
     
-    print("Autovalores aproximados: (Metodo de Householder)")
+    print("\nAutovalores aproximados: (Metodo de Householder)")
     for i, autovalor in enumerate(autovalores_hh[-1]):
         print(f"lambda_{i+1} =", autovalor)
         
-    print("Autovalores aproximados: (Metodo Rotação de Givens)")
+    print("\nAutovalores aproximados: (Metodo Rotação de Givens)")
     for i, autovalor in enumerate(autovalores_rg[-1]):
         print(f"lambda_{i+1} =", autovalor)
 
