@@ -165,3 +165,16 @@ if __name__ == "__main__":
     print("Autovalores aproximados: (Metodo Rotação de Givens)")
     for i, autovalor in enumerate(autovalores_rg[-1]):
         print(f"lambda_{i+1} =", autovalor)
+
+    print("COMPARANDO OS METODOS:")
+    print("\nAutovalores aproximados:")
+    print("           Metodo de Gram-Schmidt |   Metodo Householder   | Metodo Rotação de Givens")
+
+    # Pegue os autovalores da última iteração de cada método
+    autovalores_gs_ultima = autovalores_gs[-1]
+    autovalores_hh_ultima = autovalores_hh[-1]
+    autovalores_rg_ultima = autovalores_rg[-1]
+
+    # Itere sobre os autovalores de cada método simultaneamente
+    for i, (autovalor_gs, autovalor_hh, autovalor_rg) in enumerate(zip(autovalores_gs_ultima, autovalores_hh_ultima, autovalores_rg_ultima)):
+        print(f"lambda_{i+1} = {autovalor_gs:.20f} | {autovalor_hh:.20f} | {autovalor_rg:.20f}")
