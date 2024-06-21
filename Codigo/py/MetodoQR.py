@@ -166,8 +166,8 @@ if __name__ == "__main__":
     for i, autovalor in enumerate(autovalores_rg[-1]):
         print(f"lambda_{i+1} =", autovalor)
 
-    print("COMPARANDO OS METODOS:")
-    print("\nAutovalores aproximados:")
+    print("\nCOMPARANDO OS METODOS:")
+    print("Autovalores aproximados:")
     print("           Metodo de Gram-Schmidt |   Metodo Householder   | Metodo Rotação de Givens")
 
     # Pegue os autovalores da última iteração de cada método
