@@ -46,7 +46,7 @@ def householder(A):
     R = A.copy()
     Q = np.eye(m)
 
-    for j in range(n):
+    for j in range(n-1):
         # Aplicando a reflexão de Householder para zerar os elementos abaixo da diagonal em R
         x = R[j:m, j]
         norma_x = norma_vetor(x)
