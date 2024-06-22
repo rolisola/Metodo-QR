@@ -1,16 +1,18 @@
-import numpy as np, math # Para operações básicas com vetores e matrizes
+import numpy as np, math  # Para operações básicas com vetores e matrizes
+
 
 def norma_vetor(vetor):
     soma_quadrados = 0.0
-  
+
     # Calcula a soma dos quadrados dos elementos do vetor
     for elemento in vetor:
-        soma_quadrados += elemento ** 2
-    
+        soma_quadrados += elemento**2
+
     # Retorna a raiz quadrada da soma dos quadrados
     norma = math.sqrt(soma_quadrados)
-    
+
     return norma
+
 
 def gram_schmidt(matriz):
     """
@@ -37,31 +39,44 @@ def gram_schmidt(matriz):
             R[i, j] = np.dot(Q[:, i], matriz[:, j])
             vetor -= R[i, j] * Q[:, i]
         R[j, j] = norma_vetor(vetor)
-        Q[:, j] = vetor / R[j, j]
-    
+        if R[j, j] > 1e-10:  # Evita divisão por zero
+            Q[:, j] = vetor / R[j, j]
+        else:
+            Q[:, j] = vetor  # Vetor nulo, mantém como está
+
     return Q, R
 
+
 def householder(A):
+    """
+    Realiza a decomposição QR de uma matriz usando reflexões de Householder.
+
+    Args:
+    - A: Matriz (numpy array)
+
+    Returns:
+    - Q: Matriz ortogonal (numpy array)
+    - R: Matriz triangular superior (numpy array)
+    """
     m, n = A.shape
     R = A.copy()
     Q = np.eye(m)
 
-    for j in range(n-1):
+    for j in range(n):
         # Aplicando a reflexão de Householder para zerar os elementos abaixo da diagonal em R
-        x = R[j:m, j]
+        x = R[j:, j]
         norma_x = norma_vetor(x)
-        if R[j, j] > 0:
-            v1 = -norma_x
-        else:
-            v1 = norma_x
-        v = np.zeros_like(x)
-        v[0] = v1
-        v = v + x
-        v = v / norma_vetor(v)
-        R[j:m, j:n] -= 2 * np.outer(v, np.dot(v.T, R[j:m, j:n]))
-        Q[j:m, :] -= 2 * np.outer(v, np.dot(v.T, Q[j:m, :]))
+        v = x.copy()
+        v[0] = x[0] + np.sign(x[0]) * norma_x
+        if norma_vetor(v) != 0:
+            v = v / norma_vetor(v)
 
-    return Q.T, R
+        R[j:, j:] -= 2 * np.outer(v, np.dot(v.T, R[j:, j:]))
+
+        Q[:, j:] -= 2 * np.outer(np.dot(Q[:, j:], v), v.T)
+
+    return Q, R
+
 
 def givens(A):
     m, n = A.shape
@@ -69,10 +84,10 @@ def givens(A):
     R = A.copy()
 
     for j in range(n):
-        for i in range(m-1, j, -1):
+        for i in range(m - 1, j, -1):
             if R[i, j] != 0:
                 # Calcular os parâmetros da rotação de Givens
-                r = np.sqrt(R[j, j]**2 + R[i, j]**2)
+                r = np.sqrt(R[j, j] ** 2 + R[i, j] ** 2)
                 c = R[j, j] / r
                 s = -R[i, j] / r
 
@@ -87,6 +102,7 @@ def givens(A):
                 Q = np.dot(Q, G.T)
 
     return Q, R
+
 
 def metodo_qr(matriz_inicial, metodo, max_iteracoes=100, erro=1e-8):
     """
@@ -117,7 +133,7 @@ def metodo_qr(matriz_inicial, metodo, max_iteracoes=100, erro=1e-8):
         print(f"Matriz R_{k+1}:")
         print(R)
 
-        A_k = np.dot(R, Q) # Multiplicação RxQ
+        A_k = np.dot(R, Q)  # Multiplicação RxQ
         print(f"Matriz A_{k+1}:")
         print(A_k)
 
@@ -140,14 +156,11 @@ def metodo_qr(matriz_inicial, metodo, max_iteracoes=100, erro=1e-8):
 
     return autovalores
 
+
 # Exemplo de uso:
 if __name__ == "__main__":
     # Definindo uma matriz de exemplo
-    matriz_inicial = np.array([
-        [2, 3, 0],
-        [0, 4, 0],
-        [2, -3, 1]
-    ], dtype=float)
+    matriz_inicial = np.array([[2, 3, 0], [0, 4, 0], [2, -3, 1]], dtype=float)
 
     # Aplicando o método QR para encontrar os autovalores
     autovalores_gs = metodo_qr(matriz_inicial, "gs", 3)
@@ -157,18 +170,20 @@ if __name__ == "__main__":
     print("\nAutovalores aproximados: (Metodo de Gram-Schmidt)")
     for i, autovalor in enumerate(autovalores_gs[-1]):
         print(f"lambda_{i+1} =", autovalor)
-    
+
     print("\nAutovalores aproximados: (Metodo de Householder)")
     for i, autovalor in enumerate(autovalores_hh[-1]):
         print(f"lambda_{i+1} =", autovalor)
-        
+
     print("\nAutovalores aproximados: (Metodo Rotação de Givens)")
     for i, autovalor in enumerate(autovalores_rg[-1]):
         print(f"lambda_{i+1} =", autovalor)
 
     print("\nCOMPARANDO OS METODOS:")
     print("Autovalores aproximados:")
-    print("           Metodo de Gram-Schmidt |   Metodo Householder   | Metodo Rotação de Givens")
+    print(
+        "           Metodo de Gram-Schmidt |   Metodo Householder   | Metodo Rotação de Givens"
+    )
 
     # Pegue os autovalores da última iteração de cada método
     autovalores_gs_ultima = autovalores_gs[-1]
@@ -176,5 +191,9 @@ if __name__ == "__main__":
     autovalores_rg_ultima = autovalores_rg[-1]
 
     # Itere sobre os autovalores de cada método simultaneamente
-    for i, (autovalor_gs, autovalor_hh, autovalor_rg) in enumerate(zip(autovalores_gs_ultima, autovalores_hh_ultima, autovalores_rg_ultima)):
-        print(f"lambda_{i+1} = {autovalor_gs:.20f} | {autovalor_hh:.20f} | {autovalor_rg:.20f}")
+    for i, (autovalor_gs, autovalor_hh, autovalor_rg) in enumerate(
+        zip(autovalores_gs_ultima, autovalores_hh_ultima, autovalores_rg_ultima)
+    ):
+        print(
+            f"lambda_{i+1} = {autovalor_gs:.20f} | {autovalor_hh:.20f} | {autovalor_rg:.20f}"
+        )
